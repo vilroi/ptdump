@@ -76,16 +76,20 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 	_, err = f.Read(buf)
 	check(err)
 
-	info := binary.LittleEndian.Uint64(buf)
+	pte := binary.LittleEndian.Uint64(buf)
 	//fmt.Printf("0b%b\n", info)
 
+	return newPageInfo(pte)
+}
+
+func newPageInfo(pte uint64) {
 	var pageinfo PageInfo
-	pageinfo.Present = checkBit(info, PRESENT_BIT)
-	pageinfo.IsSwapped = checkBit(info, SWAP_BIT)
-	pageinfo.IsFileOrAnon = checkBit(info, MAP_BIT)
-	pageinfo.WriteProt = checkBit(info, WRITE_PROT_BIT)
-	pageinfo.MapExcl = checkBit(info, EXCL_MAP_BIT)
-	pageinfo.SoftDirty = checkBit(info, SOFT_DIRTY_BIT)
+	pageinfo.Present = checkBit(pte, PRESENT_BIT)
+	pageinfo.IsSwapped = checkBit(pte, SWAP_BIT)
+	pageinfo.IsFileOrAnon = checkBit(pte, MAP_BIT)
+	pageinfo.WriteProt = checkBit(pte, WRITE_PROT_BIT)
+	pageinfo.MapExcl = checkBit(pte, EXCL_MAP_BIT)
+	pageinfo.SoftDirty = checkBit(pte, SOFT_DIRTY_BIT)
 	pageinfo.Addr = uint(info & PADDR_MASK)
 
 	return pageinfo
