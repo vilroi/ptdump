@@ -129,13 +129,6 @@ func getMaps(pid int) []MapEntry {
 	return maps
 }
 
-func btoi(i int) bool {
-	if i == 0 {
-		return false
-	}
-	return true
-}
-
 func check(err error) {
 	if err != nil {
 		panic(err)
