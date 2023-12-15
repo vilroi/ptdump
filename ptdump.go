@@ -9,6 +9,19 @@ import (
 	"strconv"
 )
 
+const (
+	PRESENT_BIT    uint = (1 << 63)
+	SWAP_BIT       uint = (1 << 62)
+	MAP_BIT        uint = (1 << 61)
+	WRITE_PROT_BIT uint = (1 << 57)
+	EXCL_MAP_BIT   uint = (1 << 56)
+	SOFT_DIRTY_BIT uint = (1 << 55)
+)
+
+const (
+	PADDR_MASK uint64 = (1 << 54) - 1
+)
+
 type MapEntry struct {
 	StartAddr uint
 	EndAddr   uint
@@ -20,14 +33,13 @@ type MapEntry struct {
 	Path      string
 }
 
-type PageType int
-
 type PageInfo struct {
 	Present      bool
 	IsSwapped    bool
 	IsFileOrAnon bool
 	WriteProt    bool
 	MapExcl      bool
+	SoftDirty    bool
 	Addr         uint
 }
 
@@ -68,14 +80,22 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 	//fmt.Printf("0b%b\n", info)
 
 	var pageinfo PageInfo
-	pageinfo.Present = btoi(int(info >> 63))
-	pageinfo.IsSwapped = btoi(int(info>>62) & 1)
-	pageinfo.IsFileOrAnon = btoi(int(info>>61) & 1)
-	pageinfo.WriteProt = btoi(int(info>>57) & 1)
-	pageinfo.MapExcl = btoi(int(info>>56) & 1)
-	pageinfo.Addr = uint(info & ((1 << 56) - 1))
+	pageinfo.Present = checkBit(info, PRESENT_BIT)
+	pageinfo.IsSwapped = checkBit(info, SWAP_BIT)
+	pageinfo.IsFileOrAnon = checkBit(info, MAP_BIT)
+	pageinfo.WriteProt = checkBit(info, WRITE_PROT_BIT)
+	pageinfo.MapExcl = checkBit(info, EXCL_MAP_BIT)
+	pageinfo.SoftDirty = checkBit(info, SOFT_DIRTY_BIT)
+	pageinfo.Addr = uint(info & PADDR_MASK)
 
 	return pageinfo
+}
+
+func checkBit(val uint64, bit uint) bool {
+	if (uint(val) & bit) == 0 {
+		return false
+	}
+	return true
 }
 
 func getMaps(pid int) []MapEntry {
