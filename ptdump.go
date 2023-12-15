@@ -67,7 +67,7 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 	f, err := os.Open(path)
 	check(err)
 
-	page := (virt_addr & ^(uint(0x1000 - 1))) / 0x1000
+	page := getPage(virt_addr)
 	offset := int64(page * 8)
 	_, err = f.Seek(offset, os.SEEK_SET)
 	check(err)
@@ -77,20 +77,21 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 	check(err)
 
 	pte := binary.LittleEndian.Uint64(buf)
-	//fmt.Printf("0b%b\n", info)
+	//fmt.Printf("0b%b\n", pte)
 
 	return newPageInfo(pte)
 }
 
-func newPageInfo(pte uint64) {
+func newPageInfo(pte uint64) PageInfo {
 	var pageinfo PageInfo
+
 	pageinfo.Present = checkBit(pte, PRESENT_BIT)
 	pageinfo.IsSwapped = checkBit(pte, SWAP_BIT)
 	pageinfo.IsFileOrAnon = checkBit(pte, MAP_BIT)
 	pageinfo.WriteProt = checkBit(pte, WRITE_PROT_BIT)
 	pageinfo.MapExcl = checkBit(pte, EXCL_MAP_BIT)
 	pageinfo.SoftDirty = checkBit(pte, SOFT_DIRTY_BIT)
-	pageinfo.Addr = uint(info & PADDR_MASK)
+	pageinfo.Addr = uint(pte & PADDR_MASK)
 
 	return pageinfo
 }
@@ -127,6 +128,11 @@ func getMaps(pid int) []MapEntry {
 	}
 
 	return maps
+}
+
+func getPage(addr uint) uint {
+	pagesize := uint(os.Getpagesize())
+	return (addr & ^(pagesize - 1)) / pagesize
 }
 
 func check(err error) {
