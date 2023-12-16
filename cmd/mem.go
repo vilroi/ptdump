@@ -118,8 +118,7 @@ func newPageInfo(pte uint64) PageInfo {
 	pageinfo.WriteProt = checkBit(pte, WRITE_PROT_BIT)
 	pageinfo.MapExcl = checkBit(pte, EXCL_MAP_BIT)
 	pageinfo.SoftDirty = checkBit(pte, SOFT_DIRTY_BIT)
-	pageinfo.Addr = uint(pte & PADDR_MASK)
-	//pageinfo.Addr = uint(pte & PADDR_MASK) * os.GetpageSize();
+	pageinfo.Addr = uint(int(pte&PADDR_MASK) * os.Getpagesize())
 
 	return pageinfo
 }
