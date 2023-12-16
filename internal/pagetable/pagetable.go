@@ -5,16 +5,12 @@ import (
 )
 
 type PageTableEntry struct {
-	VirtualPage  MapEntry
-	PhysicalPage PageInfo
+	virtualPage  MapEntry
+	physicalPage PageInfo
 }
 
 type PageTable struct {
 	entries []PageTableEntry
-}
-
-func (pte *PageTableEntry) Unpack() (MapEntry, PageInfo) {
-	return pte.VirtualPage, pte.PhysicalPage
 }
 
 func NewPageTable(pid int) PageTable {
@@ -22,13 +18,16 @@ func NewPageTable(pid int) PageTable {
 
 	maps := getMaps(pid)
 	for _, m := range maps {
-		pageinfo := getPageInfo(pid, m.StartAddr)
+		pageinfo := getPageInfo(pid, m.startAddr)
 
-		pte := PageTableEntry{VirtualPage: m, PhysicalPage: pageinfo}
+		pte := PageTableEntry{virtualPage: m, physicalPage: pageinfo}
 		pt.entries = append(pt.entries, pte)
 	}
-
 	return pt
+}
+
+func (pte *PageTableEntry) Unpack() (MapEntry, PageInfo) {
+	return pte.virtualPage, pte.physicalPage
 }
 
 func (pt *PageTable) Entries() []PageTableEntry {
@@ -40,7 +39,7 @@ func (pt *PageTable) Dump() {
 	for _, pte := range pt.Entries() {
 		m, pageinfo := pte.Unpack()
 		fmt.Printf("%0#x%#20x%20d%12s%13t%16t\t\t%s\n",
-			m.StartAddr, pageinfo.Addr, (m.EndAddr - m.StartAddr),
-			m.Perms, pageinfo.Present, pageinfo.IsSwapped, m.Path)
+			m.startAddr, pageinfo.addr, (m.endAddr - m.startAddr),
+			m.perms, pageinfo.present, pageinfo.isSwapped, m.path)
 	}
 }

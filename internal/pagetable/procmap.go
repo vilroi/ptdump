@@ -10,18 +10,18 @@ import (
 var GranularFlag = false
 
 type MapEntry struct {
-	StartAddr uint
-	EndAddr   uint
-	Perms     string
-	Offset    uint
-	DevMajor  int
-	DevMinor  int
-	Inode     uint
-	Path      string
+	startAddr uint
+	endAddr   uint
+	perms     string
+	offset    uint
+	devMajor  int
+	devMinor  int
+	inode     uint
+	path      string
 }
 
 func (m *MapEntry) Size() int {
-	return int(m.EndAddr - m.StartAddr)
+	return int(m.endAddr - m.startAddr)
 }
 
 func getMaps(pid int) []MapEntry {
@@ -36,12 +36,12 @@ func getMaps(pid int) []MapEntry {
 		line := scanner.Text()
 
 		var ent MapEntry
-		_, err := fmt.Sscanf(line, "%x-%x %s %x %x:%x %d %s", &ent.StartAddr, &ent.EndAddr, &ent.Perms,
-			&ent.Offset, &ent.DevMajor, &ent.DevMinor, &ent.Inode, &ent.Path)
+		_, err := fmt.Sscanf(line, "%x-%x %s %x %x:%x %d %s", &ent.startAddr, &ent.endAddr, &ent.perms,
+			&ent.offset, &ent.devMajor, &ent.devMinor, &ent.inode, &ent.path)
 
 		if err == io.EOF {
-			_, err = fmt.Sscanf(line, "%x-%x %s %x %x:%x %d", &ent.StartAddr, &ent.EndAddr, &ent.Perms,
-				&ent.Offset, &ent.DevMajor, &ent.DevMinor, &ent.Inode)
+			_, err = fmt.Sscanf(line, "%x-%x %s %x %x:%x %d", &ent.startAddr, &ent.endAddr, &ent.perms,
+				&ent.offset, &ent.devMajor, &ent.devMinor, &ent.inode)
 		}
 		check(err)
 
@@ -69,8 +69,8 @@ func splitPages(m MapEntry) []MapEntry {
 	maps := make([]MapEntry, count)
 	for i := 0; i < count; i++ {
 		tmp := m
-		tmp.StartAddr += uint(i * pagesize)
-		tmp.EndAddr = tmp.StartAddr + uint(pagesize)
+		tmp.startAddr += uint(i * pagesize)
+		tmp.endAddr = tmp.startAddr + uint(pagesize)
 
 		maps[i] = tmp
 	}

@@ -20,13 +20,13 @@ const (
 )
 
 type PageInfo struct {
-	Present      bool
-	IsSwapped    bool
-	IsFileOrAnon bool
-	WriteProt    bool
-	MapExcl      bool
-	SoftDirty    bool
-	Addr         uint
+	present      bool
+	isSwapped    bool
+	isFileOrAnon bool
+	writeProt    bool
+	mapExcl      bool
+	softDirty    bool
+	addr         uint
 }
 
 // TODO: change from hardcoded value to something arch dependent
@@ -46,7 +46,6 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 	check(err)
 
 	pte := binary.LittleEndian.Uint64(buf)
-	//fmt.Printf("0b%b\n", pte)
 
 	return newPageInfo(pte)
 }
@@ -54,13 +53,13 @@ func getPageInfo(pid int, virt_addr uint) PageInfo {
 func newPageInfo(pte uint64) PageInfo {
 	var pageinfo PageInfo
 
-	pageinfo.Present = checkBit(pte, PRESENT_BIT)
-	pageinfo.IsSwapped = checkBit(pte, SWAP_BIT)
-	pageinfo.IsFileOrAnon = checkBit(pte, MAP_BIT)
-	pageinfo.WriteProt = checkBit(pte, WRITE_PROT_BIT)
-	pageinfo.MapExcl = checkBit(pte, EXCL_MAP_BIT)
-	pageinfo.SoftDirty = checkBit(pte, SOFT_DIRTY_BIT)
-	pageinfo.Addr = uint(int(pte&PADDR_MASK) * os.Getpagesize())
+	pageinfo.present = checkBit(pte, PRESENT_BIT)
+	pageinfo.isSwapped = checkBit(pte, SWAP_BIT)
+	pageinfo.isFileOrAnon = checkBit(pte, MAP_BIT)
+	pageinfo.writeProt = checkBit(pte, WRITE_PROT_BIT)
+	pageinfo.mapExcl = checkBit(pte, EXCL_MAP_BIT)
+	pageinfo.softDirty = checkBit(pte, SOFT_DIRTY_BIT)
+	pageinfo.addr = uint(int(pte&PADDR_MASK) * os.Getpagesize())
 
 	return pageinfo
 }
