@@ -53,15 +53,17 @@ func main() {
 	check(err)
 
 	maps := getMaps(pid)
+	fmt.Println("virt Addr\t\tphysical addr\t\tsize\t\tperms\t\tpresent\t\tswapped")
 	for _, m := range maps {
 		pageinfo := getPageInfo(pid, m.StartAddr)
-		fmt.Printf("%+v\n", m)
-		fmt.Printf("%+v\n\n", pageinfo)
+		fmt.Printf("0x%x\t\t0x%x\t\t%d\t\t%s\t\t%t\t\t%t\t\t%s\n",
+			m.StartAddr, pageinfo.Addr, (m.EndAddr - m.StartAddr),
+			m.Perms, pageinfo.Present, pageinfo.IsSwapped, m.Path)
 	}
 }
 
 // TODO: change from hardcoded value to something arch dependent
-// (8 bytes assumes 64 bit
+// (8 bytes assumes 64 bit?)
 func getPageInfo(pid int, virt_addr uint) PageInfo {
 	path := fmt.Sprintf("/proc/%d/pagemap", pid)
 	f, err := os.Open(path)
@@ -124,7 +126,32 @@ func getMaps(pid int) []MapEntry {
 		}
 		check(err)
 
+		/* TODO: create command line argument for "granular" output
+		pagesize := uint(os.Getpagesize())
+		if (ent.EndAddr - ent.StartAddr) > pagesize {
+			split := splitPages(ent)
+			maps = append(maps, split...)
+		} else {
+			maps = append(maps, ent)
+		}
+		*/
 		maps = append(maps, ent)
+	}
+
+	return maps
+}
+
+func splitPages(m MapEntry) []MapEntry {
+	pagesize := int(os.Getpagesize())
+	count := int(m.EndAddr-m.StartAddr) / pagesize
+	maps := make([]MapEntry, count)
+
+	for i := 0; i < count; i++ {
+		tmp := m
+		tmp.StartAddr += uint(i * pagesize)
+		tmp.EndAddr = tmp.StartAddr + uint(pagesize)
+
+		maps[i] = tmp
 	}
 
 	return maps
