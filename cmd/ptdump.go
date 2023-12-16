@@ -1,18 +1,19 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
 	"strconv"
 )
 
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintf(os.Stderr, "usage: %s pid\n", os.Args[0])
-		os.Exit(1)
-	}
+var granular_flag bool = false
 
-	pid, err := strconv.Atoi(os.Args[1])
+func main() {
+	init_flags()
+	flag.Parse()
+	args := flag.Args()
+
+	pid, err := strconv.Atoi(args[0])
 	check(err)
 
 	maps := getMaps(pid)
@@ -23,4 +24,8 @@ func main() {
 			m.StartAddr, pageinfo.Addr, (m.EndAddr - m.StartAddr),
 			m.Perms, pageinfo.Present, pageinfo.IsSwapped, m.Path)
 	}
+}
+
+func init_flags() {
+	flag.BoolVar(&granular_flag, "g", false, "Granular output: show all individual pages, instead of them being coaleced")
 }

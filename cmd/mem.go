@@ -99,16 +99,17 @@ func getMaps(pid int) []MapEntry {
 		}
 		check(err)
 
-		/* TODO: create command line argument for "granular" output
-		pagesize := uint(os.Getpagesize())
-		if (ent.EndAddr - ent.StartAddr) > pagesize {
-			split := splitPages(ent)
-			maps = append(maps, split...)
+		if granular_flag {
+			pagesize := uint(os.Getpagesize())
+			if (ent.EndAddr - ent.StartAddr) > pagesize {
+				split := splitPages(ent)
+				maps = append(maps, split...)
+			} else {
+				maps = append(maps, ent)
+			}
 		} else {
 			maps = append(maps, ent)
 		}
-		*/
-		maps = append(maps, ent)
 	}
 
 	return maps
