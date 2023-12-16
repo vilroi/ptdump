@@ -35,7 +35,7 @@ func (pt *PageTable) Entries() []PageTableEntry {
 }
 
 func (pt *PageTable) Dump() {
-	fmt.Printf("%v%30v%13v%15v%15v%15v%11v\n", "virt addr", "physical addr", "size", "perms", "present", "swapped", "path")
+	fmt.Printf("%v%27v%16v%15v%15v%15v%11v\n", "virt addr", "physical addr", "size", "perms", "present", "swapped", "path")
 	for _, pte := range pt.Entries() {
 		m, pageinfo := pte.Unpack()
 		fmt.Printf("%0#x%#20x%20d%12s%13t%16t\t\t%s\n",
