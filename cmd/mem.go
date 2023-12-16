@@ -42,6 +42,10 @@ type PageInfo struct {
 	Addr         uint
 }
 
+func (m *MapEntry) Size() int {
+	return int(m.EndAddr - m.StartAddr)
+}
+
 // TODO: change from hardcoded value to something arch dependent
 // (8 bytes assumes 64 bit?)
 func getPageInfo(pid int, virt_addr uint) PageInfo {
@@ -99,9 +103,10 @@ func getMaps(pid int) []MapEntry {
 		}
 		check(err)
 
+		/*TODO: Ugly. Clean up and make simpler */
 		if granular_flag {
-			pagesize := uint(os.Getpagesize())
-			if (ent.EndAddr - ent.StartAddr) > pagesize {
+			pagesize := os.Getpagesize()
+			if ent.Size() > pagesize {
 				split := splitPages(ent)
 				maps = append(maps, split...)
 			} else {
@@ -116,10 +121,10 @@ func getMaps(pid int) []MapEntry {
 }
 
 func splitPages(m MapEntry) []MapEntry {
-	pagesize := int(os.Getpagesize())
-	count := int(m.EndAddr-m.StartAddr) / pagesize
-	maps := make([]MapEntry, count)
+	pagesize := os.Getpagesize()
+	count := m.Size() / pagesize
 
+	maps := make([]MapEntry, count)
 	for i := 0; i < count; i++ {
 		tmp := m
 		tmp.StartAddr += uint(i * pagesize)
