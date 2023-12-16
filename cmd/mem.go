@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 )
 
 const (
@@ -43,25 +42,6 @@ type PageInfo struct {
 	Addr         uint
 }
 
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintf(os.Stderr, "usage: %s pid\n", os.Args[0])
-		os.Exit(1)
-	}
-
-	pid, err := strconv.Atoi(os.Args[1])
-	check(err)
-
-	maps := getMaps(pid)
-	fmt.Println("virt Addr\t\tphysical addr\t\tsize\t\tperms\t\tpresent\t\tswapped")
-	for _, m := range maps {
-		pageinfo := getPageInfo(pid, m.StartAddr)
-		fmt.Printf("0x%x\t\t0x%x\t\t%d\t\t%s\t\t%t\t\t%t\t\t%s\n",
-			m.StartAddr, pageinfo.Addr, (m.EndAddr - m.StartAddr),
-			m.Perms, pageinfo.Present, pageinfo.IsSwapped, m.Path)
-	}
-}
-
 // TODO: change from hardcoded value to something arch dependent
 // (8 bytes assumes 64 bit?)
 func getPageInfo(pid int, virt_addr uint) PageInfo {
@@ -96,13 +76,6 @@ func newPageInfo(pte uint64) PageInfo {
 	pageinfo.Addr = uint(pte & PADDR_MASK)
 
 	return pageinfo
-}
-
-func checkBit(val uint64, bit uint) bool {
-	if (uint(val) & bit) == 0 {
-		return false
-	}
-	return true
 }
 
 func getMaps(pid int) []MapEntry {
@@ -155,15 +128,4 @@ func splitPages(m MapEntry) []MapEntry {
 	}
 
 	return maps
-}
-
-func getPage(addr uint) uint {
-	pagesize := uint(os.Getpagesize())
-	return (addr & ^(pagesize - 1)) / pagesize
-}
-
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
