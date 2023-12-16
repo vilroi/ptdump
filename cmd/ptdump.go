@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"strconv"
-)
 
-var granular_flag bool = false
+	"github.com/vilroi/ptdump/internal/pagetable"
+)
 
 func main() {
 	init_flags()
@@ -15,10 +15,16 @@ func main() {
 	pid, err := strconv.Atoi(args[0])
 	check(err)
 
-	pt := NewPageTable(pid)
+	pt := pagetable.NewPageTable(pid)
 	pt.Dump()
 }
 
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func init_flags() {
-	flag.BoolVar(&granular_flag, "g", false, "Granular output: show all individual pages, instead of them being coaleced")
+	flag.BoolVar(&pagetable.GranularFlag, "g", false, "Granular output: show all individual pages, instead of them being coaleced")
 }
