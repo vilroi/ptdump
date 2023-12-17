@@ -14,7 +14,7 @@ The information dumped includes the following:
 - if it has been swapped out
 - path
 
-Since this tool is dependent on /proc/[pid]/maps and /proc/[pid]/pagemap, it may not be protable to other *nix environments.
+Since this tool is dependent on /proc/[pid]/maps and /proc/[pid]/pagemap, it may not be protable to other \*nix environments.
 Also, the tool must be run with root privileges, or it will not display the physical addresses.
 
 ## Usage

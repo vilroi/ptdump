@@ -1,4 +1,0 @@
-[] Dump the information of each page is a process
-	[] Virtual Page (/proc/pid/maps)
-		[] parse /proc/pid/maps (I need at least the starting virtual address)
-	[] Physical Page (/proc/pid/pagemap)
