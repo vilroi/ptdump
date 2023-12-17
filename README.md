@@ -23,7 +23,7 @@ By default, ptdump a single pid as an argument
 
 ```console
 $ sudo ./ptdump 89088
-virt addr              physical addr            size          perms        present        swapped   path
+virt addr              physical addr            size          perms        present        swapped path
 0x562dae786000         0x1b26c2000              192512        r--p         true           false		/usr/bin/bash
 0x562dae7b5000         0x12dc67000              790528        r-xp         true           false		/usr/bin/bash
 0x562dae876000         0x1b25ea000              229376        r--p         true           false		/usr/bin/bash
@@ -62,15 +62,15 @@ Warning: This option will spits out a lot of lines.
 ``` console
 $ sudo ./ptdump -g 23424 | head 
 virt addr              physical addr              size        perms        present        swapped   path
-0x562dae786000         0x1b26c2000                4096        r--p         true           false		/usr/bin/bash
-0x562dae787000         0x1b26c6000                4096        r--p         true           false		/usr/bin/bash
-0x562dae788000         0x1b26c1000                4096        r--p         true           false		/usr/bin/bash
-0x562dae789000         0x1b26c7000                4096        r--p         true           false		/usr/bin/bash
-0x562dae78a000         0x1b26d2000                4096        r--p         true           false		/usr/bin/bash
-0x562dae78b000         0x1b26cd000                4096        r--p         true           false		/usr/bin/bash
-0x562dae78c000         0x1b26d7000                4096        r--p         true           false		/usr/bin/bash
-0x562dae78d000         0x1b24f2000                4096        r--p         true           false		/usr/bin/bash
-0x562dae78e000         0x129685000                4096        r--p         true           false		/usr/bin/bash
+0x562dae786000         0x1b26c2000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae787000         0x1b26c6000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae788000         0x1b26c1000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae789000         0x1b26c7000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae78a000         0x1b26d2000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae78b000         0x1b26cd000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae78c000         0x1b26d7000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae78d000         0x1b24f2000                4096        r--p         true           false		  /usr/bin/bash
+0x562dae78e000         0x129685000                4096        r--p         true           false		  /usr/bin/bash
 ```
 
 Other usage includes combining it with watch(1) to watch physical page allocation (demand paging) happen in real time.
