@@ -23,7 +23,7 @@ By default, ptdump a single pid as an argument
 
 ```console
 $ sudo ./ptdump 89088
-virt addr              physical addr            size          perms        present        swapped path
+virt addr              physical addr            size          perms        present        swapped 	path
 0x562dae786000         0x1b26c2000              192512        r--p         true           false		/usr/bin/bash
 0x562dae7b5000         0x12dc67000              790528        r-xp         true           false		/usr/bin/bash
 0x562dae876000         0x1b25ea000              229376        r--p         true           false		/usr/bin/bash
@@ -61,7 +61,7 @@ The `-g` option flag can be set to show every single page (pages are grouped tog
 Warning: This option will spits out a lot of lines.
 ``` console
 $ sudo ./ptdump -g 23424 | head 
-virt addr              physical addr              size        perms        present        swapped   path
+virt addr              physical addr              size        perms        present        swapped   	  path
 0x562dae786000         0x1b26c2000                4096        r--p         true           false		  /usr/bin/bash
 0x562dae787000         0x1b26c6000                4096        r--p         true           false		  /usr/bin/bash
 0x562dae788000         0x1b26c1000                4096        r--p         true           false		  /usr/bin/bash
