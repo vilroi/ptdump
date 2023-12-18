@@ -74,4 +74,5 @@ virt addr              physical addr              size        perms        prese
 0x562dae78e000         0x129685000                4096        r--p         true           false		  /usr/bin/bash
 ```
 
-Other usage includes combining it with watch(1) to watch physical page allocation (demand paging) happen in real time.
+## Other usage
+- [Watching lazy allocation of pages (demand paging) occur in a process](https://github.com/vilroi/linux_experiments/tree/main/demand_paging)
