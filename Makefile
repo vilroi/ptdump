@@ -5,3 +5,8 @@ check:
 
 build:
 	go build -o ptdump cmd/*.go
+
+clean:
+	rm ptdump
+
+.PHONY: clean

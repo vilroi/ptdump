@@ -16,6 +16,11 @@ func getPage(addr uint) uint {
 	return (addr & ^(pagesize - 1)) / pagesize
 }
 
+func pageAlign(addr uint) uint {
+	pagesize := uint(os.Getpagesize())
+	return (addr & ^(pagesize - 1))
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
