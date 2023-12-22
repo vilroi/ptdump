@@ -1,9 +1,5 @@
 package pagetable
 
-import (
-	"os"
-)
-
 func checkBit(val uint64, bit uint) bool {
 	if (uint(val) & bit) == 0 {
 		return false
@@ -12,12 +8,10 @@ func checkBit(val uint64, bit uint) bool {
 }
 
 func getPage(addr uint) uint {
-	pagesize := uint(os.Getpagesize())
 	return (addr & ^(pagesize - 1)) / pagesize
 }
 
 func pageAlign(addr uint) uint {
-	pagesize := uint(os.Getpagesize())
 	return (addr & ^(pagesize - 1))
 }
 

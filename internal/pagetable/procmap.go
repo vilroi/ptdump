@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
-var GranularFlag = false
-var StartAddr uint = 0
-var Length uint = 0
-var EndAddr uint = uint(math.Pow(2, 64)) - 1
-
-var PageSize = os.Getpagesize()
+var (
+	GranularFlag      = false
+	StartAddr    uint = 0
+	Length       uint = 0
+	EndAddr      uint = uint(math.Pow(2, 64)) - 1
+	pagesize          = uint(os.Getpagesize())
+)
 
 type MapEntry struct {
 	startAddr uint
@@ -26,8 +27,8 @@ type MapEntry struct {
 	path      string
 }
 
-func (m *MapEntry) Size() int {
-	return int(m.endAddr - m.startAddr)
+func (m *MapEntry) Size() uint {
+	return m.endAddr - m.startAddr
 }
 
 // TODO: this funtion is starting to get hacky...think of way to make simpler
@@ -58,7 +59,6 @@ func getMaps(pid int) []MapEntry {
 
 		/*TODO: Ugly. Clean up and make simpler */
 		if GranularFlag {
-			pagesize := os.Getpagesize()
 			if ent.Size() > pagesize {
 				split := splitPages(ent)
 				maps = append(maps, split...)
@@ -74,13 +74,12 @@ func getMaps(pid int) []MapEntry {
 }
 
 func splitPages(m MapEntry) []MapEntry {
-	pagesize := os.Getpagesize()
-	count := m.Size() / pagesize
+	count := int(m.Size() / pagesize)
 
 	maps := make([]MapEntry, count)
 	for i := 0; i < count; i++ {
 		tmp := m
-		tmp.startAddr += uint(i * pagesize)
+		tmp.startAddr += uint(i * int(pagesize))
 		tmp.endAddr = tmp.startAddr + uint(pagesize)
 
 		maps[i] = tmp
@@ -92,7 +91,6 @@ func splitPages(m MapEntry) []MapEntry {
 func addrWithinRange(m *MapEntry) bool {
 	if Length != 0 {
 		EndAddr = pageAlign(StartAddr + Length)
-		fmt.Printf("%#x\n", EndAddr)
 	}
 	if StartAddr <= m.startAddr && m.endAddr <= EndAddr {
 		return true

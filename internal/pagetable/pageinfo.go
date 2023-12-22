@@ -59,7 +59,7 @@ func newPageInfo(pte uint64) PageInfo {
 	pageinfo.writeProt = checkBit(pte, WRITE_PROT_BIT)
 	pageinfo.mapExcl = checkBit(pte, EXCL_MAP_BIT)
 	pageinfo.softDirty = checkBit(pte, SOFT_DIRTY_BIT)
-	pageinfo.addr = uint(int(pte&PADDR_MASK) * os.Getpagesize())
+	pageinfo.addr = uint(((pte & PADDR_MASK) * uint64(pagesize)))
 
 	return pageinfo
 }
