@@ -18,6 +18,8 @@ Since this tool is dependent on /proc/[pid]/maps and /proc/[pid]/pagemap, it may
 
 Also, the tool must be run with root privileges, or it will not display the physical addresses.
 
+**This tool is WIP**
+
 ## Usage
 
 By default, ptdump a single pid as an argument
