@@ -4,16 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"math"
 	"os"
 )
 
 var (
-	GranularFlag      = false
-	StartAddr    uint = 0
-	Length       uint = 0
-	EndAddr      uint = uint(math.Pow(2, 64)) - 1
-	pagesize          = uint(os.Getpagesize())
+	GranularFlag = false
+	pagesize     = uint(os.Getpagesize())
 )
 
 type MapEntry struct {
@@ -53,21 +49,15 @@ func getMaps(pid int) []MapEntry {
 		}
 		check(err)
 
-		if addrWithinRange(&ent) == false {
-			continue
-		}
-
-		/*TODO: Ugly. Clean up and make simpler */
 		if GranularFlag {
 			if ent.Size() > pagesize {
 				split := splitPages(ent)
 				maps = append(maps, split...)
-			} else {
-				maps = append(maps, ent)
+				continue
 			}
-		} else {
-			maps = append(maps, ent)
 		}
+		maps = append(maps, ent)
+
 	}
 
 	return maps
@@ -86,14 +76,4 @@ func splitPages(m MapEntry) []MapEntry {
 	}
 
 	return maps
-}
-
-func addrWithinRange(m *MapEntry) bool {
-	if Length != 0 {
-		EndAddr = pageAlign(StartAddr + Length)
-	}
-	if StartAddr <= m.startAddr && m.endAddr <= EndAddr {
-		return true
-	}
-	return false
 }
