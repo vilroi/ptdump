@@ -15,6 +15,7 @@ The information dumped includes the following:
 - path
 
 Since this tool is dependent on /proc/[pid]/maps and /proc/[pid]/pagemap, it may not be protable to other \*nix environments.
+
 Also, the tool must be run with root privileges, or it will not display the physical addresses.
 
 ## Usage
@@ -58,7 +59,7 @@ virt addr              physical addr            size          perms        prese
 
 The `-g` option flag can be set to show every single page (pages are grouped together by default). 
 
-Warning: This option will spits out a lot of lines.
+Warning: This option will spit out a lot of lines.
 ``` console
 $ sudo ./ptdump -g 23424 | head 
 virt addr              physical addr              size        perms        present        swapped   	  path
@@ -73,4 +74,5 @@ virt addr              physical addr              size        perms        prese
 0x562dae78e000         0x129685000                4096        r--p         true           false		  /usr/bin/bash
 ```
 
-Other usage includes combining it with watch(1) to watch physical page allocation (demand paging) happen in real time.
+## Other usage
+- [Watching lazy allocation of pages (demand paging) occur in a process](https://github.com/vilroi/linux_experiments/tree/main/demand_paging)
